@@ -1,9 +1,12 @@
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter } from 'redux/phonebook/phonebookSlice';
+import { getFilter } from 'redux/selectors';
 
-const Filter = ({ filter, onChange }) => {
+const Filter = () => {
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
   const handleOnChange = ({ currentTarget }) => {
-    const value = currentTarget.value;
-    onChange(value);
+    dispatch(setFilter(currentTarget.value));
   };
 
   return (
@@ -14,8 +17,4 @@ const Filter = ({ filter, onChange }) => {
   );
 };
 
-Filter.propTypes = {
-  filter: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
 export default Filter;

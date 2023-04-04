@@ -5,14 +5,33 @@ import {
   FormInput,
   StyledErrorMessage,
 } from './ContactForm.styled';
-import PropTypes from 'prop-types';
+
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { addContact } from 'redux/phonebook/phonebookSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { getContacts } from 'redux/selectors';
 
 const phoneRegExp =
   /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/g;
 
-const ContactForm = ({ onSubmit }) => {
+const ContactForm = () => {
+  const contacts = useSelector(getContacts);
+
+  const dispatch = useDispatch();
+  const handleSubmit = contact => {
+    const findContact = name => {
+      const toFind = name.toLowerCase();
+      if (contacts.find(({ name }) => name.toLowerCase() === toFind))
+        return true;
+      else return false;
+    };
+    if (!findContact(contact.name)) {
+      dispatch(addContact({ ...contact, id: nanoid() }));
+      return true;
+    } else return false;
+  };
   return (
     <Formik
       initialValues={{ name: '', number: '' }}
@@ -28,7 +47,7 @@ const ContactForm = ({ onSubmit }) => {
           .required(),
       })}
       onSubmit={({ name, number }, { resetForm }) => {
-        if (onSubmit({ name, number })) resetForm();
+        if (handleSubmit({ name, number })) resetForm();
         else alert(`${name} already in contacts`);
       }}
     >
@@ -70,7 +89,4 @@ const ContactForm = ({ onSubmit }) => {
   );
 };
 
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
 export default ContactForm;
