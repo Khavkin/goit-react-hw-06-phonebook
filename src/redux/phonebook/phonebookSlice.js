@@ -9,7 +9,6 @@ export const phonebookSlice = createSlice({
 
   reducers: {
     addContact: (state, action) => {
-      console.log('addContact', state, action.payload);
       state.contacts = [...state.contacts, action.payload];
     },
     delContact: (state, action) => {
